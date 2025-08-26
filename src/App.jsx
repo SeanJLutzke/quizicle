@@ -10,7 +10,8 @@ function App() {
   return (
     <div>
     <h1>Welcome to Quizicle.</h1>
-    <Homepage setOutputURL={setOutputURL} onsubmit={(data) => { setOutputURL(data.outputURL); setUserName(data.name);}}/>
+    <h2>Fill out the form and press Start Quiz.</h2>
+    <Homepage setOutputURL={setOutputURL} onSubmit={(data) => { setOutputURL(data.outputURL); setUserName(data.name);}}/>
     {outputURL && <Backend outputURL={outputURL} name={userName}/>}
     </div>
     

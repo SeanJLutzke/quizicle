@@ -27,42 +27,42 @@ function shuffle(array) {
         fetch(outputURL)
             .then(res => res.json())
             .then(data => {
-                console.log("Got API", data.results)
-                setQuizData([0, 1])
+                console.log("Got API")
+                setQuizData(data.results)
                 console.log("data", quizData)
             })
-            // .catch(err => {
-            //     console.error("fetch failed", err);
-            //     setQuizData({ results: [] });
-            // });
+            .catch(err => {
+                console.error("fetch failed", err);
+                setQuizData([]);
+            });
     };
 
-
-        fetchQuiz();
- 
-       
-    
+    useEffect(() => { if (!outputURL) return; fetchQuiz(); }, [outputURL]);
+        
 
     // if (!quizData || !quizData.results) {
     //     return <div>Loading...</div>
     // }
-    // if (quizData.results.length === 0) {
+    // if (quizData.length === 0) {
     //     return <div>No questions found. Please try a different category or difficulty.</div>;
     // }
     console.log(quizData);
-    const currentQuestion = quizData.results[index];
-    
+    const currentQuestion = quizData[index];
+  
+
+    const answerBank = useMemo(() => { 
+        if (!currentQuestion) return [];
+        return shuffle([
+        ...currentQuestion.incorrect_answers,
+        currentQuestion.correct_answer
+    ]);
+}, [currentQuestion]);
+
+  
     if (!currentQuestion) {
         return <div>Loading question...</div>;
     }
 
-//     const answerBank = useMemo(() => { 
-//         // if (!quizData) return [];
-//         return shuffle([
-//         ...currentQuestion.incorrect_answers,
-//         currentQuestion.correct_answer
-//     ]);
-// }, [currentQuestion]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -81,15 +81,15 @@ function shuffle(array) {
         setResult(null);
     };
 
-    // const hardReset = () => {
-    //     setQuizData();
-    //     setIndex(0);
-    //     setChoice('');
-    //     setResult(null);
-    //     setScore(0);
-    //     fetchQuiz();
+    const hardReset = () => {
+        setQuizData([]);
+        setIndex(0);
+        setChoice('');
+        setResult(null);
+        setScore(0);
+        fetchQuiz();
 
-    // };
+    };
 
     function decodeHtml(html) {
         const txt = document.createElement("textarea");
@@ -118,9 +118,9 @@ function shuffle(array) {
                 <button type='submit' disabled={!!result}>Submit</button>
             </form>
             {result && <div>{result}</div>}
-            {result && index < quizData.results.length - 1 && (<button onClick={handleNext}>Next Question</button>)}
-            {/* {result && index === quizData.results.length - 1 && (<button onClick={handleNext}>Finish Quiz</button>)} */}
-            {result && index === quizData.results.length - 1 && (<button onClick={hardReset}>You've completed the quiz with a score of {choice === currentQuestion.correct_answer ? score + 1 : score}/10. Click here to try again. </button>)}
+            {result && index < quizData.length - 1 && (<button onClick={handleNext}>Next Question</button>)}
+            {/* {result && index === quizData.length - 1 && (<button onClick={handleNext}>Finish Quiz</button>)} */}
+            {result && index === quizData.length - 1 && (<button onClick={hardReset}>You've completed the quiz with a score of {score}/10. Click here to try again. </button>)}
         </div>
     );
 }

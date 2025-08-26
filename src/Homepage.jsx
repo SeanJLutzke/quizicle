@@ -2,19 +2,17 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 // categories: mythology is 20,science and nature is 17, science computers is 18, science math is 19,
-function Homepage({ onsubmit, setOutputURL }) {
+function Homepage({ onSubmit, setOutputURL }) {
     const [quizForm, setQuizForm] = useState({
         name: '',
         category: '',
         difficulty: '',
     });
 
-function displayQuestions () {
-    setOutputURL(`https://opentdb.com/api.php?amount=10&category=${quizForm.category}&difficulty=${quizForm.difficulty}&type=multiple`);
-};
     const handleSubmit = (e) => {
         e.preventDefault();
-    
+        const outputURL = `https://opentdb.com/api.php?amount=10&category=${quizForm.category}&difficulty=${quizForm.difficulty}&type=multiple`;
+        onSubmit?.({ name: quizForm.name, outputURL});
         setQuizForm({ name: '', category: '', difficulty: '' })
         displayQuestions();
     };
